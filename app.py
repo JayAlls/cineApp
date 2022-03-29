@@ -1,3 +1,13 @@
+from tkinter import *
+
+window = Tk()
+window.geometry("720x540")
+window.minsize(720, 540)
+window.title("Séance de cinéma - Logiciel de gestion")
+window.config(background="grey")
+
+
+
 films = [{
         "titre": "Voyage au centre du HTML",
         "horraire": "18h",
@@ -15,24 +25,42 @@ films = [{
     }
 ]
 
+
+def click_btn(film_id, txt):
+    print(f"Vous avez choisis le film {films[film_id - 1]['titre']}")
+
+    nb_place = films[film_id - 1]['places']
+
+    if nb_place > 0:
+        print("Achat efféctué !")
+        films[film_id-1]['places'] -= 1
+        txt.set(films[film_id-1]['places'])
+        print(f'Film {films[film_id - 1]["titre"]}, nombre de place restante : {nb_place}')
+
+    else:
+        print("Film Complet")
+        txt.set("Film Complet")
+
+
 for numeros, film in enumerate(films, start=1):
     titre = film["titre"]
     horraire = film["horraire"]
     places = film["places"]
+    place_var = StringVar()
+    place_var.set(places)
 
-    print(f"Salle {numeros}: {titre}, séances {horraire}, nombre de places: {places}")
+    title_label = Label(window, text=titre, font=("Georgia", 20), bg='grey')
+    title_label.grid(row= numeros, column=0)
 
+    horraire_label = Label(window, text=horraire, font=("Georgia", 20), bg='grey')
+    horraire_label.grid(row=numeros , column=1)
 
-while True:
-    choix = int(input("Entrez le numéros de salle du film que vous désirez voir (1,2 ou 3): "))
-    print(f"Vous avez choisis le film {films[choix-1]['titre']}")
+    places_label = Label(window, textvariable=place_var, font=("Georgia", 20), bg='grey')
+    places_label.grid(row=numeros, column=2)
 
-    nb_place = films[choix-1]['places']
+    bouton = Button(window, text='reserver', font=("Georgia", 20), bg='grey',
+                    command= lambda num=numeros,
+                    txt=place_var: click_btn(num, txt))
+    bouton.grid(row=numeros, column=3)
 
-    if nb_place > 0:
-        print("Achat efféctué !")
-        films[choix-1]['places'] -= 1
-        print(f'Film {films[choix-1]["titre"]}, nombre de place restante : {nb_place}')
-
-    else:
-        print('Film Complet !')
+window.mainloop()
